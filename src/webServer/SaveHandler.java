@@ -4,7 +4,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import dao.PhonebookDAO;
 import entity.Person;
-import mapper.PersonMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +23,7 @@ public class SaveHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
 
         var inputStream = exchange.getRequestBody();
-        int c = 0;
+        int c;
         var body = new StringBuilder();
         while ((c = inputStream.read()) != -1) {
             body.append((char) c);
@@ -37,7 +36,6 @@ public class SaveHandler implements HttpHandler {
         Connection connection = getConnection(properties);
 
         var dao = new PhonebookDAO(connection);
-        var mapper = new PersonMapper();
         args.add(0, "");
         args.forEach(System.out::println);
         var person = new Person();
