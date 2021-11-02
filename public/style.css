@@ -1,0 +1,12 @@
+.person {
+    font-family: Georgia;
+    font-size: 15px;
+    color: green;
+    border: black 5px solid;
+    background: antiquewhite;
+    width: 100%;
+}
+.row {
+    font-weight: bold;
+    font-size: 18px;
+}
