@@ -44,22 +44,22 @@ public class ApplicationDAO {
         try {
             if (application.getId() != null) {
                 var stmt = this.connection.prepareStatement(
-                        "UPDATE Application SET age = ?, firstname = ?, lastname = ?, address = ?, status = ? WHERE id = ?"
+                        "UPDATE Application SET firstname = ?, lastname = ?, age = ?, address = ?, status = ? WHERE id = ?"
                 );
-                stmt.setInt(1, application.getAge());
-                stmt.setString(2, application.getFirstname());
-                stmt.setString(3, application.getLastname());
+                stmt.setString(1, application.getFirstname());
+                stmt.setString(2, application.getLastname());
+                stmt.setInt(3, application.getAge());
                 stmt.setString(4, application.getAddress());
                 stmt.setInt(5, application.getStatus());
                 stmt.setInt(6, application.getId());
                 stmt.execute();
             } else {
                 var stmt = this.connection.prepareStatement(
-                        "INSERT INTO Application (age, firstname, lastname, address, status) VALUES (?, ?, ?, ?, ?)"
+                        "INSERT INTO Application (firstname, lastname, age, address, status) VALUES (?, ?, ?, ?, ?)"
                 );
-                stmt.setInt(1, application.getAge());
-                stmt.setString(2, application.getFirstname());
-                stmt.setString(3, application.getLastname());
+                stmt.setString(1, application.getFirstname());
+                stmt.setString(2, application.getLastname());
+                stmt.setInt(3, application.getAge());
                 stmt.setString(4, application.getAddress());
                 stmt.setInt(5, application.getStatus());
                 stmt.execute();
