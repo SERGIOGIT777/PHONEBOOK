@@ -3,6 +3,7 @@ package webServer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import dao.PhonebookDAO;
+import entity.Person;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,35 +14,51 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class IndexHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange t) throws IOException {
-        var properties = new Properties();
-        var dao = new PhonebookDAO(getConnection(properties));
+
         System.out.println("Handling: " + t.getRequestURI());
 
         var file = new File("./public/index.html");
 //        var response = Files.readAllBytes(Paths.get(file.getPath()));
         var response1 = Files.readString(Paths.get(file.getPath()));
-        var person = dao.findAll();
         var builder = new StringBuilder();
-        builder.append("<table class = \"person\">");
-        builder.append("<tr class = \"row\">");
-        builder.append("<td class = \"row\">FirstName</td>");
-        builder.append("<td class = \"row\">LastName</td>");
-        builder.append("<td class = \"row\">Age</td>");
-        builder.append("<td class = \"row\">Phone Number</td>");
-        builder.append("<td class = \"row\">Address</td>");
-        builder.append("</tr>");
+        var properties = new Properties();
+        var dao = new PhonebookDAO(getConnection(properties));
+        var method = t.getRequestMethod();
+        if (method.equals("POST")) {
+            var inputStream = t.getRequestBody();
+            int c;
+            var body = new StringBuilder();
+            while ((c = inputStream.read()) != -1) {
+                body.append((char) c);
+            }
+            var args = Arrays.stream(body.toString().split("&")).collect(Collectors.toList());
+            var fields = new HashMap<String, String>();
+            args.forEach(arg -> fields.put(arg.split("=")[0], arg.split("=")[1]));
+            var person = new Person();
+            person.setFirstname(fields.get("fname"));
+            person.setLastname(fields.get("lname"));
+            person.setAge(Integer.parseInt(fields.get("age")));
+            person.setPhoneNumber(fields.get("mob"));
+            person.setAddress(fields.get("address"));
+            dao.save(person);
+        }
+        var person = dao.findAll();
         person.forEach(x -> {
-            builder.append("<tr class = \"pow\">");
-            builder.append("<td class = \"pow\">" + x.getFirstname() + "</td>");
-            builder.append("<td class = \"pow\">" + x.getLastname() + "</td>");
-            builder.append("<td class = \"pow\">" + x.getAge() + "</td>");
-            builder.append("<td class = \"pow\">" + x.getPhoneNumber() + "</td>");
-            builder.append("<td class = \"pow\">" + x.getAddress() + "</td>");
+            builder.append("<tr class=\"table-dark\">");
+            builder.append("<th scope=\"row\" class=\"bg-primary\">" + x.getId() + "</th>");
+            builder.append("<td class=\"bg-primary\">" + x.getFirstname() + "</td>");
+            builder.append("<td class=\"bg-primary\">" + x.getLastname() + "</td>");
+            builder.append("<td class=\"bg-primary\">" + x.getAge() + "</td>");
+            builder.append("<td class=\"bg-primary\">" + x.getPhoneNumber() + "</td>");
+            builder.append("<td class=\"bg-primary\">" + x.getAddress() + "</td>");
             builder.append("</tr>");
         });
         builder.append("</table>");
