@@ -39,13 +39,13 @@ public class SaveHandler implements HttpHandler {
         args.add(0, "");
         args.forEach(System.out::println);
         var person = new Person();
-        person.setFirstname(fields.get("firstname"));
-        person.setLastname(fields.get("lastname"));
+        person.setFirstname(fields.get("fname"));
+        person.setLastname(fields.get("lname"));
         person.setAge(Integer.parseInt(fields.get("age")));
-        person.setPhoneNumber(fields.get("phone_number"));
+        person.setPhoneNumber(fields.get("mob"));
         person.setAddress(fields.get("address"));
         dao.save(person);
-        var file = new File("./public/save.html");
+        var file = new File("./public/index.html");
         var response = Files.readAllBytes(Paths.get(file.getPath()));
         exchange.sendResponseHeaders(200, response.length);
         OutputStream os = exchange.getResponseBody();

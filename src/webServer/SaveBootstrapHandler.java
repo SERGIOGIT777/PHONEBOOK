@@ -38,8 +38,8 @@ public class SaveBootstrapHandler implements HttpHandler {
         args.add(0, "");
         args.forEach(System.out::println);
         var application = new Application();
-        application.setFirstname(fields.get("firstname"));
-        application.setLastname(fields.get("lastname"));
+        application.setFirstname(fields.get("fname"));
+        application.setLastname(fields.get("lname"));
         application.setAge(Integer.valueOf(fields.get("age")));
         application.setAddress(fields.get("address"));
         application.setStatus(Integer.valueOf(fields.get("status")));
